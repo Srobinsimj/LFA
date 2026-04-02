@@ -1,0 +1,2468 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LFA — Liberia Football Association</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== ROOT VARIABLES ===== */
+  :root {
+    --navy: #050d1a;
+    --navy2: #071428;
+    --blue: #0a1f44;
+    --blue2: #0d2a5e;
+    --gold: #c9a227;
+    --gold2: #f0c84e;
+    --gold3: #ffe179;
+    --white: #f0f4ff;
+    --grey: #8a9bb5;
+    --red: #c0392b;
+    --glass: rgba(255,255,255,0.04);
+    --glass-border: rgba(201,162,39,0.2);
+    --glow: 0 0 30px rgba(201,162,39,0.15);
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
+    --font-condensed: 'Barlow Condensed', sans-serif;
+  }
+
+- { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+background: var(–navy);
+color: var(–white);
+font-family: var(–font-body);
+font-size: 16px;
+overflow-x: hidden;
+}
+
+/* ===== NOISE TEXTURE OVERLAY ===== */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’ opacity=‘0.03’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 0;
+}
+
+/* ===== PAGE SYSTEM ===== */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ===== NAVBAR ===== */
+nav {
+position: fixed;
+top: 0; left: 0; right: 0;
+z-index: 1000;
+background: rgba(5,13,26,0.92);
+backdrop-filter: blur(16px);
+border-bottom: 1px solid var(–glass-border);
+}
+
+.nav-inner {
+max-width: 1400px;
+margin: 0 auto;
+display: flex;
+align-items: center;
+padding: 0 2rem;
+height: 68px;
+gap: 2rem;
+}
+
+.logo {
+display: flex;
+align-items: center;
+gap: 12px;
+cursor: pointer;
+text-decoration: none;
+}
+
+.logo-badge {
+width: 44px; height: 44px;
+background: linear-gradient(135deg, var(–gold), var(–gold2));
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+font-family: var(–font-display);
+font-size: 18px;
+color: var(–navy);
+font-weight: 900;
+box-shadow: 0 0 20px rgba(201,162,39,0.4);
+flex-shrink: 0;
+}
+
+.logo-text { line-height: 1; }
+.logo-text span:first-child {
+display: block;
+font-family: var(–font-display);
+font-size: 20px;
+color: var(–gold2);
+letter-spacing: 2px;
+}
+.logo-text span:last-child {
+display: block;
+font-family: var(–font-condensed);
+font-size: 10px;
+color: var(–grey);
+letter-spacing: 3px;
+text-transform: uppercase;
+}
+
+.nav-links {
+display: flex;
+list-style: none;
+gap: 0.2rem;
+margin-left: auto;
+}
+
+.nav-links li a, .nav-links li button {
+display: block;
+padding: 8px 18px;
+color: var(–grey);
+text-decoration: none;
+font-family: var(–font-condensed);
+font-weight: 600;
+font-size: 13px;
+letter-spacing: 2px;
+text-transform: uppercase;
+border-radius: 4px;
+border: none;
+background: none;
+cursor: pointer;
+transition: all 0.25s;
+position: relative;
+}
+
+.nav-links li a::after {
+content: ‘’;
+position: absolute;
+bottom: 4px; left: 18px; right: 18px;
+height: 1px;
+background: var(–gold);
+transform: scaleX(0);
+transition: transform 0.25s;
+}
+
+.nav-links li a:hover::after,
+.nav-links li a.active::after { transform: scaleX(1); }
+
+.nav-links li a:hover, .nav-links li a.active,
+.nav-links li button:hover {
+color: var(–gold2);
+}
+
+.nav-cta {
+margin-left: 1rem;
+padding: 9px 22px !important;
+background: linear-gradient(135deg, var(–gold), var(–gold2)) !important;
+color: var(–navy) !important;
+font-weight: 700 !important;
+border-radius: 4px !important;
+transition: all 0.25s !important;
+}
+.nav-cta:hover { box-shadow: 0 0 20px rgba(201,162,39,0.5) !important; transform: translateY(-1px); }
+
+/* ===== HERO ===== */
+.hero {
+position: relative;
+min-height: 100vh;
+display: flex;
+align-items: flex-end;
+overflow: hidden;
+padding-top: 68px;
+}
+
+.hero-bg {
+position: absolute;
+inset: 0;
+background: linear-gradient(135deg, #020813 0%, #071428 40%, #0a1f44 70%, #071428 100%);
+}
+
+.hero-bg::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background:
+radial-gradient(ellipse 60% 80% at 70% 40%, rgba(10,31,68,0.6) 0%, transparent 60%),
+radial-gradient(ellipse 40% 40% at 20% 80%, rgba(201,162,39,0.06) 0%, transparent 60%);
+}
+
+.hero-img-container {
+position: absolute;
+right: 0; bottom: 0;
+width: 55%;
+height: 100%;
+overflow: hidden;
+}
+
+.hero-img-container img {
+width: 100%; height: 100%;
+object-fit: cover;
+object-position: top center;
+filter: brightness(0.7) contrast(1.1) saturate(0.9);
+}
+
+.hero-img-container::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: linear-gradient(to right, var(–navy) 0%, transparent 40%);
+z-index: 1;
+}
+
+.hero-img-container::after {
+content: ‘’;
+position: absolute;
+bottom: 0; left: 0; right: 0;
+height: 40%;
+background: linear-gradient(to top, var(–navy) 0%, transparent 100%);
+z-index: 1;
+}
+
+.hero-content {
+position: relative;
+z-index: 2;
+max-width: 1400px;
+margin: 0 auto;
+padding: 6rem 2rem;
+width: 100%;
+}
+
+.hero-tag {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+background: rgba(201,162,39,0.1);
+border: 1px solid rgba(201,162,39,0.3);
+padding: 6px 16px;
+border-radius: 2px;
+font-family: var(–font-condensed);
+font-size: 11px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–gold2);
+margin-bottom: 1.5rem;
+animation: fadeUp 0.8s ease both;
+}
+
+.hero-tag::before {
+content: ‘’;
+width: 6px; height: 6px;
+background: var(–gold2);
+border-radius: 50%;
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+0%, 100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.5; transform: scale(0.7); }
+}
+
+.hero h1 {
+font-family: var(–font-display);
+font-size: clamp(5rem, 12vw, 11rem);
+line-height: 0.88;
+letter-spacing: -2px;
+color: var(–white);
+animation: fadeUp 0.8s 0.1s ease both;
+}
+
+.hero h1 .gold { color: var(–gold2); }
+.hero h1 .stroke {
+-webkit-text-stroke: 2px var(–white);
+color: transparent;
+}
+
+.hero-sub {
+font-family: var(–font-condensed);
+font-size: 1.2rem;
+color: var(–grey);
+margin: 1.5rem 0 2.5rem;
+max-width: 480px;
+line-height: 1.6;
+animation: fadeUp 0.8s 0.2s ease both;
+}
+
+.hero-actions {
+display: flex;
+gap: 1rem;
+animation: fadeUp 0.8s 0.3s ease both;
+}
+
+.btn-primary {
+padding: 14px 36px;
+background: linear-gradient(135deg, var(–gold), var(–gold2));
+color: var(–navy);
+font-family: var(–font-condensed);
+font-weight: 700;
+font-size: 13px;
+letter-spacing: 2px;
+text-transform: uppercase;
+border: none;
+border-radius: 3px;
+cursor: pointer;
+transition: all 0.3s;
+text-decoration: none;
+display: inline-block;
+}
+
+.btn-primary:hover {
+box-shadow: 0 8px 30px rgba(201,162,39,0.4);
+transform: translateY(-2px);
+}
+
+.btn-outline {
+padding: 14px 36px;
+background: transparent;
+color: var(–white);
+font-family: var(–font-condensed);
+font-weight: 700;
+font-size: 13px;
+letter-spacing: 2px;
+text-transform: uppercase;
+border: 1px solid rgba(255,255,255,0.2);
+border-radius: 3px;
+cursor: pointer;
+transition: all 0.3s;
+text-decoration: none;
+display: inline-block;
+}
+
+.btn-outline:hover {
+border-color: var(–gold);
+color: var(–gold2);
+}
+
+.hero-stats {
+display: flex;
+gap: 3rem;
+margin-top: 4rem;
+padding-top: 2rem;
+border-top: 1px solid rgba(255,255,255,0.06);
+animation: fadeUp 0.8s 0.4s ease both;
+}
+
+.hero-stat-item { }
+.hero-stat-num {
+font-family: var(–font-display);
+font-size: 3rem;
+color: var(–gold2);
+line-height: 1;
+}
+.hero-stat-label {
+font-family: var(–font-condensed);
+font-size: 11px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–grey);
+margin-top: 4px;
+}
+
+.scrolling-ticker {
+position: absolute;
+bottom: 0; left: 0; right: 0;
+background: var(–gold);
+padding: 10px 0;
+overflow: hidden;
+z-index: 3;
+}
+
+.ticker-track {
+display: flex;
+gap: 4rem;
+animation: ticker 30s linear infinite;
+white-space: nowrap;
+}
+
+.ticker-item {
+font-family: var(–font-condensed);
+font-weight: 700;
+font-size: 13px;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(–navy);
+flex-shrink: 0;
+}
+
+.ticker-dot {
+display: inline-block;
+width: 5px; height: 5px;
+background: var(–navy);
+border-radius: 50%;
+margin-left: 4rem;
+vertical-align: middle;
+}
+
+@keyframes ticker {
+from { transform: translateX(0); }
+to { transform: translateX(-50%); }
+}
+
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(30px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== SECTION SYSTEM ===== */
+section {
+padding: 6rem 0;
+position: relative;
+z-index: 1;
+}
+
+.container {
+max-width: 1400px;
+margin: 0 auto;
+padding: 0 2rem;
+}
+
+.section-header {
+display: flex;
+align-items: flex-end;
+justify-content: space-between;
+margin-bottom: 3rem;
+}
+
+.section-label {
+font-family: var(–font-condensed);
+font-size: 11px;
+letter-spacing: 4px;
+text-transform: uppercase;
+color: var(–gold2);
+margin-bottom: 8px;
+display: block;
+}
+
+.section-title {
+font-family: var(–font-display);
+font-size: clamp(2.5rem, 5vw, 4.5rem);
+line-height: 0.9;
+color: var(–white);
+}
+
+/* ===== GLASS CARD ===== */
+.glass-card {
+background: var(–glass);
+border: 1px solid var(–glass-border);
+border-radius: 8px;
+backdrop-filter: blur(10px);
+transition: all 0.3s;
+overflow: hidden;
+}
+
+.glass-card:hover {
+border-color: rgba(201,162,39,0.4);
+box-shadow: var(–glow);
+transform: translateY(-4px);
+}
+
+/* ===== NEWS GRID ===== */
+.news-grid {
+display: grid;
+grid-template-columns: 2fr 1fr 1fr;
+gap: 1.5rem;
+}
+
+.news-card-main { grid-row: span 2; }
+
+.news-thumb {
+width: 100%;
+height: 280px;
+overflow: hidden;
+}
+
+.news-card-main .news-thumb { height: 400px; }
+
+.news-thumb img {
+width: 100%; height: 100%;
+object-fit: cover;
+transition: transform 0.5s;
+}
+
+.glass-card:hover .news-thumb img { transform: scale(1.05); }
+
+.news-body {
+padding: 1.5rem;
+}
+
+.news-category {
+font-family: var(–font-condensed);
+font-size: 10px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–gold2);
+margin-bottom: 8px;
+}
+
+.news-headline {
+font-family: var(–font-condensed);
+font-weight: 700;
+font-size: 1.3rem;
+line-height: 1.2;
+margin-bottom: 8px;
+color: var(–white);
+}
+
+.news-card-main .news-headline { font-size: 1.8rem; }
+
+.news-excerpt {
+font-size: 0.9rem;
+color: var(–grey);
+line-height: 1.5;
+margin-bottom: 1rem;
+}
+
+.news-meta {
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.news-date {
+font-family: var(–font-condensed);
+font-size: 11px;
+color: var(–grey);
+letter-spacing: 1px;
+}
+
+.btn-story {
+font-family: var(–font-condensed);
+font-size: 11px;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(–gold2);
+background: none;
+border: none;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 6px;
+transition: gap 0.2s;
+}
+
+.btn-story:hover { gap: 10px; }
+.btn-story::after { content: ‘→’; }
+
+/* ===== PLAYER SHOWCASE ===== */
+.player-showcase {
+background: linear-gradient(180deg, var(–navy2) 0%, var(–blue) 50%, var(–navy2) 100%);
+position: relative;
+overflow: hidden;
+}
+
+.player-showcase::before {
+content: ‘’;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 600px; height: 600px;
+background: radial-gradient(circle, rgba(201,162,39,0.06) 0%, transparent 70%);
+border-radius: 50%;
+}
+
+.players-grid {
+display: grid;
+grid-template-columns: 1fr 1.4fr 1fr;
+gap: 2rem;
+align-items: center;
+}
+
+.player-card {
+border-radius: 12px;
+overflow: hidden;
+position: relative;
+}
+
+.player-card.featured {
+box-shadow: 0 0 60px rgba(201,162,39,0.2);
+transform: scale(1.05);
+z-index: 2;
+}
+
+.player-img {
+width: 100%;
+height: 380px;
+overflow: hidden;
+position: relative;
+}
+
+.player-card.featured .player-img { height: 480px; }
+
+.player-img img {
+width: 100%; height: 100%;
+object-fit: cover;
+object-position: top;
+filter: brightness(0.8);
+}
+
+.player-card:not(.featured) .player-img img {
+filter: brightness(0.5) blur(2px);
+}
+
+.player-overlay {
+position: absolute;
+bottom: 0; left: 0; right: 0;
+background: linear-gradient(to top, rgba(5,13,26,0.95) 0%, transparent 60%);
+padding: 2rem 1.5rem 1.5rem;
+}
+
+.player-number {
+font-family: var(–font-display);
+font-size: 4rem;
+color: rgba(201,162,39,0.2);
+line-height: 1;
+margin-bottom: -10px;
+}
+
+.player-name {
+font-family: var(–font-display);
+font-size: 1.6rem;
+color: var(–white);
+line-height: 1;
+}
+
+.player-card.featured .player-name { font-size: 2.2rem; }
+
+.player-position {
+font-family: var(–font-condensed);
+font-size: 11px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–gold2);
+margin-top: 4px;
+}
+
+.player-stats-row {
+display: flex;
+gap: 1rem;
+margin-top: 1rem;
+padding-top: 1rem;
+border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.pstat { flex: 1; text-align: center; }
+.pstat-num {
+font-family: var(–font-display);
+font-size: 1.5rem;
+color: var(–gold2);
+}
+.pstat-label {
+font-family: var(–font-condensed);
+font-size: 9px;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(–grey);
+}
+
+/* ===== ACTION SHOT ===== */
+.action-section {
+position: relative;
+min-height: 80vh;
+display: flex;
+align-items: center;
+overflow: hidden;
+}
+
+.action-bg {
+position: absolute;
+inset: 0;
+overflow: hidden;
+}
+
+.action-bg img {
+width: 100%; height: 100%;
+object-fit: cover;
+filter: brightness(0.3) contrast(1.2) saturate(0.8);
+}
+
+.action-bg::after {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: linear-gradient(135deg, rgba(5,13,26,0.9) 0%, rgba(5,13,26,0.4) 50%, rgba(5,13,26,0.8) 100%);
+}
+
+.action-content {
+position: relative;
+z-index: 2;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 4rem;
+align-items: center;
+max-width: 1400px;
+margin: 0 auto;
+padding: 0 2rem;
+}
+
+.action-headline {
+font-family: var(–font-display);
+font-size: clamp(4rem, 8vw, 8rem);
+line-height: 0.85;
+color: var(–white);
+}
+
+.action-headline .gold { color: var(–gold2); }
+.energy-lines {
+position: absolute;
+inset: 0;
+pointer-events: none;
+overflow: hidden;
+}
+
+.energy-lines::before, .energy-lines::after {
+content: ‘’;
+position: absolute;
+height: 2px;
+width: 300px;
+background: linear-gradient(to right, transparent, var(–gold), transparent);
+animation: energyMove 3s ease-in-out infinite alternate;
+}
+
+.energy-lines::before { top: 30%; left: -10%; animation-delay: 0s; }
+.energy-lines::after { top: 60%; right: -10%; animation-delay: 1.5s; }
+
+@keyframes energyMove {
+from { transform: translateX(0); opacity: 0.5; }
+to { transform: translateX(100px); opacity: 1; }
+}
+
+.action-stats {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 1rem;
+}
+
+.action-stat-card {
+background: var(–glass);
+border: 1px solid var(–glass-border);
+border-radius: 8px;
+padding: 1.5rem;
+backdrop-filter: blur(10px);
+}
+
+.action-stat-card:first-child {
+grid-column: span 2;
+background: rgba(201,162,39,0.08);
+border-color: rgba(201,162,39,0.3);
+}
+
+.ast-num {
+font-family: var(–font-display);
+font-size: 3.5rem;
+color: var(–gold2);
+line-height: 1;
+}
+
+.ast-label {
+font-family: var(–font-condensed);
+font-size: 11px;
+letter-spacing: 3px;
+color: var(–grey);
+text-transform: uppercase;
+margin-top: 4px;
+}
+
+.ast-desc {
+font-size: 0.85rem;
+color: var(–grey);
+margin-top: 8px;
+line-height: 1.4;
+}
+
+/* ===== VIDEO SECTION ===== */
+.video-section {
+background: var(–navy2);
+}
+
+.video-grid {
+display: grid;
+grid-template-columns: 2fr 1fr;
+gap: 1.5rem;
+}
+
+.video-container {
+border-radius: 8px;
+overflow: hidden;
+position: relative;
+background: #000;
+}
+
+.video-container video {
+width: 100%; height: 100%;
+object-fit: cover;
+}
+
+.video-main { height: 480px; }
+.video-side-grid { display: flex; flex-direction: column; gap: 1rem; }
+.video-side-item { height: 150px; }
+
+.video-placeholder {
+width: 100%; height: 100%;
+background: linear-gradient(135deg, var(–blue) 0%, var(–navy2) 100%);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 8px;
+cursor: pointer;
+transition: all 0.3s;
+}
+
+.video-placeholder:hover { filter: brightness(1.2); }
+
+.play-btn {
+width: 56px; height: 56px;
+background: linear-gradient(135deg, var(–gold), var(–gold2));
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+font-size: 20px;
+transition: all 0.3s;
+}
+
+.video-placeholder:hover .play-btn { transform: scale(1.1); box-shadow: 0 0 20px rgba(201,162,39,0.4); }
+
+.video-caption {
+font-family: var(–font-condensed);
+font-size: 12px;
+letter-spacing: 2px;
+color: var(–grey);
+text-align: center;
+}
+
+/* ===== STANDINGS TABLE ===== */
+.standings-section {
+background: linear-gradient(180deg, var(–navy) 0%, var(–navy2) 100%);
+}
+
+.tables-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 2rem;
+}
+
+.table-card {
+background: var(–glass);
+border: 1px solid var(–glass-border);
+border-radius: 8px;
+overflow: hidden;
+}
+
+.table-header {
+padding: 1.2rem 1.5rem;
+background: rgba(201,162,39,0.08);
+border-bottom: 1px solid var(–glass-border);
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.table-title {
+font-family: var(–font-condensed);
+font-weight: 700;
+font-size: 1.1rem;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(–gold2);
+}
+
+.table-season {
+font-family: var(–font-condensed);
+font-size: 11px;
+letter-spacing: 2px;
+color: var(–grey);
+text-transform: uppercase;
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+}
+
+thead th {
+padding: 10px 12px;
+text-align: left;
+font-family: var(–font-condensed);
+font-size: 10px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–grey);
+border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+thead th:not(:first-child) { text-align: center; }
+
+tbody tr {
+border-bottom: 1px solid rgba(255,255,255,0.03);
+transition: background 0.2s;
+}
+
+tbody tr:hover { background: rgba(201,162,39,0.04); }
+
+tbody tr.highlight { background: rgba(201,162,39,0.08); }
+
+tbody td {
+padding: 12px;
+font-family: var(–font-condensed);
+font-size: 0.95rem;
+font-weight: 600;
+color: var(–white);
+}
+
+tbody td:not(:first-child):not(:nth-child(2)) { text-align: center; color: var(–grey); }
+
+.pos-badge {
+width: 24px; height: 24px;
+border-radius: 4px;
+background: rgba(255,255,255,0.06);
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-size: 12px;
+font-weight: 700;
+color: var(–grey);
+}
+
+.pos-badge.top { background: rgba(201,162,39,0.15); color: var(–gold2); }
+.pos-badge.drop { background: rgba(192,57,43,0.15); color: #e74c3c; }
+
+.form-pills { display: flex; gap: 3px; }
+.pill {
+width: 18px; height: 18px;
+border-radius: 3px;
+display: flex; align-items: center; justify-content: center;
+font-size: 9px;
+font-weight: 700;
+}
+.pill.w { background: rgba(39,174,96,0.3); color: #2ecc71; }
+.pill.d { background: rgba(255,255,255,0.1); color: var(–grey); }
+.pill.l { background: rgba(192,57,43,0.3); color: #e74c3c; }
+
+/* ===== SCHEDULE TABLE ===== */
+.match-row td:first-child { font-weight: 700; color: var(–gold2); }
+
+/* ===== CLUBS PAGE ===== */
+.clubs-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1.5rem;
+}
+
+.club-card {
+padding: 2rem;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+
+.club-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 3px;
+background: linear-gradient(to right, var(–gold), var(–gold2));
+transform: scaleX(0);
+transition: transform 0.3s;
+}
+
+.club-card:hover::before { transform: scaleX(1); }
+
+.club-emblem {
+width: 80px; height: 80px;
+margin: 0 auto 1rem;
+background: linear-gradient(135deg, var(–blue) 0%, var(–navy2) 100%);
+border-radius: 50%;
+border: 2px solid var(–glass-border);
+display: flex; align-items: center; justify-content: center;
+font-family: var(–font-display);
+font-size: 2rem;
+color: var(–gold2);
+transition: all 0.3s;
+}
+
+.club-card:hover .club-emblem {
+border-color: var(–gold);
+box-shadow: 0 0 20px rgba(201,162,39,0.3);
+}
+
+.club-name {
+font-family: var(–font-display);
+font-size: 1.4rem;
+color: var(–white);
+margin-bottom: 4px;
+}
+
+.club-city {
+font-family: var(–font-condensed);
+font-size: 11px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–grey);
+margin-bottom: 1rem;
+}
+
+.club-info-list {
+list-style: none;
+text-align: left;
+font-family: var(–font-condensed);
+font-size: 0.9rem;
+color: var(–grey);
+}
+
+.club-info-list li {
+padding: 4px 0;
+border-bottom: 1px solid rgba(255,255,255,0.04);
+display: flex;
+justify-content: space-between;
+}
+
+.club-info-list li span { color: var(–white); }
+
+/* ===== NESTED LIST ===== */
+.nested-list-section {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 2rem;
+}
+
+.list-card {
+background: var(–glass);
+border: 1px solid var(–glass-border);
+border-radius: 8px;
+padding: 2rem;
+}
+
+.list-card h3 {
+font-family: var(–font-condensed);
+font-weight: 700;
+font-size: 1.1rem;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(–gold2);
+margin-bottom: 1.2rem;
+padding-bottom: 0.8rem;
+border-bottom: 1px solid var(–glass-border);
+}
+
+.lfa-list {
+list-style: none;
+padding: 0;
+}
+
+.lfa-list > li {
+padding: 8px 0;
+border-bottom: 1px solid rgba(255,255,255,0.04);
+font-family: var(–font-condensed);
+font-size: 1rem;
+color: var(–white);
+font-weight: 600;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 8px;
+transition: color 0.2s;
+}
+
+.lfa-list > li::before {
+content: ‘’;
+width: 4px; height: 4px;
+background: var(–gold2);
+border-radius: 50%;
+flex-shrink: 0;
+}
+
+.lfa-list > li:hover { color: var(–gold2); }
+
+.lfa-list > li > ul {
+list-style: none;
+padding-left: 16px;
+margin-top: 6px;
+width: 100%;
+}
+
+.lfa-list > li > ul > li {
+padding: 4px 0;
+font-size: 0.85rem;
+color: var(–grey);
+font-weight: 400;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.lfa-list > li > ul > li::before {
+content: ‘–’;
+color: var(–gold2);
+font-size: 0.7rem;
+}
+
+/* ===== TICKETS PAGE ===== */
+.tickets-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2rem;
+}
+
+.ticket-card {
+background: var(–glass);
+border: 1px solid var(–glass-border);
+border-radius: 12px;
+overflow: hidden;
+position: relative;
+transition: all 0.3s;
+}
+
+.ticket-card:hover {
+border-color: var(–gold);
+box-shadow: 0 0 40px rgba(201,162,39,0.15);
+transform: translateY(-6px);
+}
+
+.ticket-card.featured {
+border-color: var(–gold);
+box-shadow: 0 0 30px rgba(201,162,39,0.1);
+}
+
+.ticket-badge {
+position: absolute;
+top: 1rem; right: 1rem;
+background: var(–gold);
+color: var(–navy);
+font-family: var(–font-condensed);
+font-weight: 700;
+font-size: 10px;
+letter-spacing: 2px;
+text-transform: uppercase;
+padding: 3px 10px;
+border-radius: 2px;
+}
+
+.ticket-head {
+padding: 2rem;
+background: rgba(201,162,39,0.05);
+border-bottom: 1px solid var(–glass-border);
+}
+
+.ticket-tier {
+font-family: var(–font-condensed);
+font-size: 10px;
+letter-spacing: 4px;
+text-transform: uppercase;
+color: var(–grey);
+margin-bottom: 6px;
+}
+
+.ticket-name {
+font-family: var(–font-display);
+font-size: 2rem;
+color: var(–white);
+}
+
+.ticket-price {
+font-family: var(–font-display);
+font-size: 3.5rem;
+color: var(–gold2);
+line-height: 1;
+margin-top: 8px;
+}
+
+.ticket-price span {
+font-family: var(–font-condensed);
+font-size: 1rem;
+font-weight: 400;
+color: var(–grey);
+}
+
+.ticket-body { padding: 1.5rem 2rem 2rem; }
+
+.ticket-features {
+list-style: none;
+margin-bottom: 1.5rem;
+}
+
+.ticket-features li {
+padding: 6px 0;
+font-family: var(–font-condensed);
+font-size: 0.95rem;
+color: var(–grey);
+display: flex;
+align-items: center;
+gap: 8px;
+border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.ticket-features li::before { content: ‘✓’; color: var(–gold2); font-weight: 700; }
+.ticket-features li.x::before { content: ‘✗’; color: rgba(255,255,255,0.2); }
+.ticket-features li.x { color: rgba(255,255,255,0.2); }
+
+/* ===== ABOUT/HISTORY ===== */
+.history-section {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 4rem;
+align-items: start;
+}
+
+.history-img {
+position: relative;
+}
+
+.history-img img {
+width: 100%;
+height: 500px;
+object-fit: cover;
+border-radius: 8px;
+}
+
+.history-img::after {
+content: ‘’;
+position: absolute;
+inset: -12px -12px 12px 12px;
+border: 2px solid rgba(201,162,39,0.2);
+border-radius: 8px;
+z-index: -1;
+}
+
+.history-year {
+position: absolute;
+bottom: -20px; left: -20px;
+background: var(–gold);
+color: var(–navy);
+font-family: var(–font-display);
+font-size: 2.5rem;
+padding: 16px 24px;
+border-radius: 6px;
+}
+
+.history-text {}
+.history-text p {
+font-size: 1rem;
+color: var(–grey);
+line-height: 1.8;
+margin-bottom: 1.2rem;
+}
+
+.history-text p strong { color: var(–gold2); }
+
+.timeline {
+margin-top: 2rem;
+position: relative;
+padding-left: 1.5rem;
+}
+
+.timeline::before {
+content: ‘’;
+position: absolute;
+left: 0; top: 0; bottom: 0;
+width: 1px;
+background: linear-gradient(to bottom, var(–gold), transparent);
+}
+
+.timeline-item {
+margin-bottom: 1.5rem;
+position: relative;
+}
+
+.timeline-item::before {
+content: ‘’;
+position: absolute;
+left: -1.7rem; top: 4px;
+width: 8px; height: 8px;
+background: var(–gold2);
+border-radius: 50%;
+box-shadow: 0 0 10px rgba(201,162,39,0.5);
+}
+
+.timeline-year {
+font-family: var(–font-display);
+font-size: 1.5rem;
+color: var(–gold2);
+}
+
+.timeline-desc {
+font-family: var(–font-condensed);
+font-size: 0.95rem;
+color: var(–grey);
+margin-top: 2px;
+}
+
+/* ===== FOOTER ===== */
+footer {
+background: #020810;
+border-top: 1px solid rgba(201,162,39,0.1);
+padding: 4rem 0 2rem;
+margin-top: 6rem;
+}
+
+.footer-grid {
+display: grid;
+grid-template-columns: 1.5fr 1fr 1fr 1fr;
+gap: 3rem;
+margin-bottom: 3rem;
+}
+
+.footer-brand {}
+.footer-logo {
+display: flex;
+align-items: center;
+gap: 12px;
+margin-bottom: 1.2rem;
+}
+
+.footer-desc {
+font-size: 0.9rem;
+color: var(–grey);
+line-height: 1.7;
+margin-bottom: 1.5rem;
+}
+
+.social-links {
+display: flex;
+gap: 10px;
+}
+
+.social-link {
+width: 38px; height: 38px;
+border: 1px solid var(–glass-border);
+border-radius: 4px;
+display: flex; align-items: center; justify-content: center;
+font-size: 16px;
+color: var(–grey);
+cursor: pointer;
+transition: all 0.2s;
+text-decoration: none;
+}
+
+.social-link:hover { border-color: var(–gold); color: var(–gold2); }
+
+.footer-col h4 {
+font-family: var(–font-condensed);
+font-weight: 700;
+font-size: 12px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(–gold2);
+margin-bottom: 1.2rem;
+}
+
+.footer-links { list-style: none; }
+.footer-links li {
+margin-bottom: 8px;
+}
+.footer-links li a {
+font-family: var(–font-condensed);
+font-size: 0.95rem;
+color: var(–grey);
+text-decoration: none;
+transition: color 0.2s;
+display: flex;
+align-items: center;
+gap: 6px;
+cursor: pointer;
+}
+.footer-links li a::before { content: ‘›’; color: var(–gold2); }
+.footer-links li a:hover { color: var(–gold2); }
+
+.footer-bottom {
+padding-top: 2rem;
+border-top: 1px solid rgba(255,255,255,0.04);
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.footer-copy {
+font-family: var(–font-condensed);
+font-size: 12px;
+color: rgba(138,155,181,0.5);
+letter-spacing: 1px;
+}
+
+.footer-legal {
+display: flex;
+gap: 2rem;
+}
+
+.footer-legal a {
+font-family: var(–font-condensed);
+font-size: 12px;
+color: rgba(138,155,181,0.5);
+text-decoration: none;
+cursor: pointer;
+transition: color 0.2s;
+}
+
+.footer-legal a:hover { color: var(–gold2); }
+
+/* ===== GOLD DIVIDER ===== */
+.gold-divider {
+height: 1px;
+background: linear-gradient(to right, transparent, var(–gold), transparent);
+margin: 2rem 0;
+opacity: 0.3;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+.news-grid, .tables-grid, .players-grid, .history-section { grid-template-columns: 1fr; }
+.news-card-main { grid-row: auto; }
+.clubs-grid, .tickets-grid { grid-template-columns: 1fr 1fr; }
+.footer-grid { grid-template-columns: 1fr 1fr; }
+.hero-img-container { width: 100%; opacity: 0.3; }
+.action-content { grid-template-columns: 1fr; }
+.video-grid { grid-template-columns: 1fr; }
+.nested-list-section { grid-template-columns: 1fr; }
+}
+
+/* ===== SCROLL ANIMATIONS ===== */
+.reveal {
+opacity: 0;
+transform: translateY(30px);
+transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ===== SECTION BG VARIANTS ===== */
+.bg-alt { background: linear-gradient(180deg, var(–navy2) 0%, var(–navy) 100%); }
+.bg-pattern {
+background: var(–navy2);
+position: relative;
+}
+.bg-pattern::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background-image: repeating-linear-gradient(
+-45deg,
+transparent,
+transparent 40px,
+rgba(255,255,255,0.01) 40px,
+rgba(255,255,255,0.01) 41px
+);
+pointer-events: none;
+}
+</style>
+
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" onclick="showPage('home')">
+      <div class="logo-badge">LFA</div>
+      <div class="logo-text">
+        <span>LFA LIBERIA</span>
+        <span>Football Association</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" onclick="showPage('home')" id="nav-home" class="active">Home</a></li>
+      <li><a href="#" onclick="showPage('clubs')" id="nav-clubs">Clubs</a></li>
+      <li><a href="#" onclick="showPage('standings')" id="nav-standings">Standings</a></li>
+      <li><a href="#" onclick="showPage('tickets')" id="nav-tickets">Tickets</a></li>
+      <li><a href="#" onclick="showPage('about')" id="nav-about">About LFA</a></li>
+      <li><a href="#" class="nav-cta">Shop</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ========================================
+     PAGE 1: HOME
+     ======================================== -->
+
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-img-container">
+      <img src="img1.jpeg" alt="LFA Football Action">
+    </div>
+    <div class="hero-content">
+      <div class="hero-tag">🔴 Live Season 2024/25</div>
+      <h1>
+        THE<br>
+        <span class="gold">BEAUTIFUL</span><br>
+        <span class="stroke">GAME</span>
+      </h1>
+      <p class="hero-sub">Liberia Football Association — the heartbeat of Liberian football. Bringing elite competition, passion, and pride to every match across the nation.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" onclick="showPage('standings')">View Standings</a>
+        <a class="btn-outline" onclick="showPage('tickets')">Buy Tickets</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">16</div>
+          <div class="hero-stat-label">Premier Clubs</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">38</div>
+          <div class="hero-stat-label">Matchdays</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">1936</div>
+          <div class="hero-stat-label">Founded</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">8</div>
+          <div class="hero-stat-label">National Trophies</div>
+        </div>
+      </div>
+    </div>
+    <div class="scrolling-ticker">
+      <div class="ticker-track">
+        <span class="ticker-item">BARRACK YOUNG CONTROLLERS 2–1 FOMBAH FC <span class="ticker-dot"></span></span>
+        <span class="ticker-item">WATANGA FC 0–0 NIMBA UNITED <span class="ticker-dot"></span></span>
+        <span class="ticker-item">MONROVIA CLUB BREWERIES 3–0 KORKOYA FC <span class="ticker-dot"></span></span>
+        <span class="ticker-item">FC FASSELL 1–1 MIGHTY BARROLLE <span class="ticker-dot"></span></span>
+        <span class="ticker-item">BARRACK YOUNG CONTROLLERS 2–1 FOMBAH FC <span class="ticker-dot"></span></span>
+        <span class="ticker-item">WATANGA FC 0–0 NIMBA UNITED <span class="ticker-dot"></span></span>
+        <span class="ticker-item">MONROVIA CLUB BREWERIES 3–0 KORKOYA FC <span class="ticker-dot"></span></span>
+        <span class="ticker-item">FC FASSELL 1–1 MIGHTY BARROLLE <span class="ticker-dot"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWS SECTION -->
+
+  <section class="bg-alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <span class="section-label">Latest Updates</span>
+          <h2 class="section-title">NEWS &<br>HIGHLIGHTS</h2>
+        </div>
+        <button class="btn-outline" style="font-family:var(--font-condensed);font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:10px 24px;border-radius:3px;cursor:pointer;">All News →</button>
+      </div>
+      <div class="news-grid">
+        <div class="glass-card news-card-main reveal">
+          <div class="news-thumb">
+            <img src="img6.jpeg" alt="Match Action">
+          </div>
+          <div class="news-body">
+            <div class="news-category">⚽ Match Report</div>
+            <h3 class="news-headline">Barrack Young Controllers Edge Fombah FC in Thrilling Monrovia Derby</h3>
+            <p class="news-excerpt">A breathtaking second-half comeback saw BYC snatch all three points in a fiercely contested encounter at the Antoinette Tubman Stadium. The match showcased the finest Liberian football has to offer — passion, flair, and unyielding determination from both sides.</p>
+            <div class="news-meta">
+              <span class="news-date">March 28, 2025</span>
+              <button class="btn-story">Full Story</button>
+            </div>
+          </div>
+        </div>
+        <div class="glass-card reveal">
+          <div class="news-thumb">
+            <img src="img5.jpeg" alt="Training">
+          </div>
+          <div class="news-body">
+            <div class="news-category">🏋 Training</div>
+            <h3 class="news-headline">Watanga FC Sharpens Squad Ahead of Title Decider</h3>
+            <p class="news-excerpt">Intensive pre-match sessions reveal a squad primed for the biggest game of the season.</p>
+            <div class="news-meta">
+              <span class="news-date">March 25, 2025</span>
+              <button class="btn-story">Full Story</button>
+            </div>
+          </div>
+        </div>
+        <div class="glass-card reveal">
+          <div class="news-thumb">
+            <img src="img3.jpeg" alt="Team Photo">
+          </div>
+          <div class="news-body">
+            <div class="news-category">📋 Squad News</div>
+            <h3 class="news-headline">FC Fassell Unveils 28-Man Roster for Second Half of Season</h3>
+            <p class="news-excerpt">Three exciting new signings bolster the title contenders as they target league glory.</p>
+            <div class="news-meta">
+              <span class="news-date">March 22, 2025</span>
+              <button class="btn-story">Full Story</button>
+            </div>
+          </div>
+        </div>
+        <div class="glass-card reveal" style="grid-column:2/4;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;height:100%;">
+            <div class="news-thumb" style="height:auto;min-height:200px;">
+              <img src="img2.jpeg" alt="Player Focus" style="height:100%;">
+            </div>
+            <div class="news-body">
+              <div class="news-category">🌟 Player Feature</div>
+              <h3 class="news-headline">The Boot Ritual: Inside a Liberian Footballer's Pre-Match Routine</h3>
+              <p class="news-excerpt">From the dressing room to the final whistle — an intimate look at what drives the nation's elite players to perform at their peak week in, week out on the LFA stage.</p>
+              <div class="news-meta">
+                <span class="news-date">March 20, 2025</span>
+                <button class="btn-story">Full Story</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAYER SHOWCASE -->
+
+  <section class="player-showcase">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <span class="section-label">Stars of the League</span>
+          <h2 class="section-title">PLAYER<br>SPOTLIGHT</h2>
+        </div>
+      </div>
+      <div class="players-grid">
+        <div class="glass-card player-card reveal">
+          <div class="player-img">
+            <img src="img5.jpeg" alt="Player 2">
+          </div>
+          <div class="player-overlay">
+            <div class="player-number">17</div>
+            <div class="player-name">Kofi Kamara</div>
+            <div class="player-position">Attacking Midfielder</div>
+          </div>
+        </div>
+        <div class="glass-card player-card featured reveal">
+          <div class="player-img">
+            <img src="img1.jpeg" alt="Featured Player">
+          </div>
+          <div class="player-overlay">
+            <div class="player-number">10</div>
+            <div class="player-name">Emmanuel Yarkpawolo</div>
+            <div class="player-position">⭐ Season's Best — Forward</div>
+            <div class="player-stats-row">
+              <div class="pstat"><div class="pstat-num">18</div><div class="pstat-label">Goals</div></div>
+              <div class="pstat"><div class="pstat-num">11</div><div class="pstat-label">Assists</div></div>
+              <div class="pstat"><div class="pstat-num">28</div><div class="pstat-label">Apps</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="glass-card player-card reveal">
+          <div class="player-img">
+            <img src="img2.jpeg" alt="Player 3">
+          </div>
+          <div class="player-overlay">
+            <div class="player-number">4</div>
+            <div class="player-name">Marcus Kollie</div>
+            <div class="player-position">Central Defender</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTION SHOT SECTION -->
+
+  <div class="action-section">
+    <div class="energy-lines"></div>
+    <div class="action-bg">
+      <img src="img6.jpeg" alt="Action">
+    </div>
+    <div class="action-content">
+      <div>
+        <span class="section-label" style="color:var(--gold2);font-family:var(--font-condensed);font-size:11px;letter-spacing:4px;text-transform:uppercase;display:block;margin-bottom:1rem;">The LFA Spirit</span>
+        <h2 class="action-headline">GLORY<br>AWAITS<br><span class="gold">LIBERIA</span></h2>
+        <p style="color:var(--grey);font-family:var(--font-condensed);font-size:1.1rem;margin-top:1.5rem;line-height:1.7;max-width:420px;">Every tackle, every sprint, every goal — Liberian football bleeds passion. Our league is more than a competition; it is the soul of a nation finding its voice through the beautiful game.</p>
+        <div style="margin-top:2rem;">
+          <button class="btn-primary" onclick="showPage('about')">Our Story</button>
+        </div>
+      </div>
+      <div class="action-stats">
+        <div class="action-stat-card">
+          <div class="ast-num">342</div>
+          <div class="ast-label">Goals Scored This Season</div>
+          <div class="ast-desc">The highest scoring LFA Premier League season in two decades, averaging nearly 2.7 goals per game across all fixtures.</div>
+        </div>
+        <div class="action-stat-card">
+          <div class="ast-num">68K</div>
+          <div class="ast-label">Matchday Attendance</div>
+        </div>
+        <div class="action-stat-card">
+          <div class="ast-num">24</div>
+          <div class="ast-label">Nationalities</div>
+        </div>
+        <div class="action-stat-card">
+          <div class="ast-num">89</div>
+          <div class="ast-label">Years of History</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEO SECTION -->
+
+  <section class="video-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <span class="section-label">Watch & Replay</span>
+          <h2 class="section-title">MATCH<br>CENTRE</h2>
+        </div>
+      </div>
+      <div class="video-grid reveal">
+        <div class="video-container video-main glass-card">
+          <video controls poster="img6.jpeg" style="width:100%;height:100%;object-fit:cover;">
+            <source src="video1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div class="video-side-grid">
+          <div class="video-container video-side-item glass-card">
+            <div class="video-placeholder" onclick="this.parentElement.querySelector('video') && this.parentElement.querySelector('video').play()">
+              <img src="img5.jpeg" alt="Match" style="width:100%;height:100%;object-fit:cover;position:absolute;opacity:0.5;">
+              <div style="position:relative;z-index:1;text-align:center;">
+                <div class="play-btn">▶</div>
+                <div class="video-caption" style="margin-top:8px;">WATANGA vs NIMBA — Highlights</div>
+              </div>
+            </div>
+          </div>
+          <div class="video-container video-side-item glass-card">
+            <div class="video-placeholder">
+              <img src="img3.jpeg" alt="Match" style="width:100%;height:100%;object-fit:cover;position:absolute;opacity:0.5;">
+              <div style="position:relative;z-index:1;text-align:center;">
+                <div class="play-btn">▶</div>
+                <div class="video-caption" style="margin-top:8px;">FASSELL vs BARROLLE — Goals</div>
+              </div>
+            </div>
+          </div>
+          <div class="video-container video-side-item glass-card">
+            <div class="video-placeholder">
+              <img src="img1.jpeg" alt="Match" style="width:100%;height:100%;object-fit:cover;position:absolute;opacity:0.5;">
+              <div style="position:relative;z-index:1;text-align:center;">
+                <div class="play-btn">▶</div>
+                <div class="video-caption" style="margin-top:8px;">BYC Pre-Season Training</div>
+              </div>
+            </div>
+          </div>
+          <div class="video-container video-side-item glass-card">
+            <div class="video-placeholder">
+              <img src="img4.jpeg" alt="Injury Update" style="width:100%;height:100%;object-fit:cover;position:absolute;opacity:0.5;">
+              <div style="position:relative;z-index:1;text-align:center;">
+                <div class="play-btn">▶</div>
+                <div class="video-caption" style="margin-top:8px;">Injury Update: Season Report</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-home -->
+
+<!-- ========================================
+     PAGE 2: STANDINGS
+     ======================================== -->
+
+<div class="page" id="page-standings">
+  <div style="padding-top:68px;"></div>
+  <section class="standings-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <span class="section-label">2024/25 Season</span>
+          <h2 class="section-title">LEAGUE<br>STANDINGS</h2>
+        </div>
+      </div>
+
+```
+  <div class="tables-grid">
+    <!-- TABLE 1: PREMIER LEAGUE STANDINGS -->
+    <div class="table-card reveal">
+      <div class="table-header">
+        <span class="table-title">LFA Premier League</span>
+        <span class="table-season">2024/25 · GW 28</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Club</th>
+            <th>P</th>
+            <th>W</th>
+            <th>D</th>
+            <th>L</th>
+            <th>GD</th>
+            <th>Pts</th>
+            <th>Form</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td><span class="pos-badge top">1</span></td>
+            <td><strong>Barrack Young Controllers</strong></td>
+            <td>28</td><td>18</td><td>6</td><td>4</td><td>+24</td>
+            <td><strong style="color:var(--gold2)">60</strong></td>
+            <td><div class="form-pills"><span class="pill w">W</span><span class="pill w">W</span><span class="pill d">D</span><span class="pill w">W</span><span class="pill w">W</span></div></td>
+          </tr>
+          <tr>
+            <td><span class="pos-badge top">2</span></td>
+            <td><strong>FC Fassell</strong></td>
+            <td>28</td><td>16</td><td>7</td><td>5</td><td>+18</td>
+            <td><strong style="color:var(--gold2)">55</strong></td>
+            <td><div class="form-pills"><span class="pill w">W</span><span class="pill l">L</span><span class="pill w">W</span><span class="pill w">W</span><span class="pill d">D</span></div></td>
+          </tr>
+          <tr>
+            <td><span class="pos-badge top">3</span></td>
+            <td><strong>Mighty Barrolle</strong></td>
+            <td>28</td><td>15</td><td>8</td><td>5</td><td>+15</td>
+            <td><strong style="color:var(--gold2)">53</strong></td>
+            <td><div class="form-pills"><span class="pill d">D</span><span class="pill w">W</span><span class="pill w">W</span><span class="pill l">L</span><span class="pill w">W</span></div></td>
+          </tr>
+          <tr>
+            <td><span class="pos-badge">4</span></td>
+            <td>Watanga FC</td>
+            <td>28</td><td>14</td><td>7</td><td>7</td><td>+9</td><td>49</td>
+            <td><div class="form-pills"><span class="pill d">D</span><span class="pill d">D</span><span class="pill w">W</span><span class="pill w">W</span><span class="pill l">L</span></div></td>
+          </tr>
+          <tr>
+            <td><span class="pos-badge">5</span></td>
+            <td>Monrovia Club Breweries</td>
+            <td>28</td><td>13</td><td>8</td><td>7</td><td>+7</td><td>47</td>
+            <td><div class="form-pills"><span class="pill w">W</span><span class="pill w">W</span><span class="pill w">W</span><span class="pill d">D</span><span class="pill l">L</span></div></td>
+          </tr>
+          <tr>
+            <td><span class="pos-badge">6</span></td>
+            <td>Nimba United</td>
+            <td>28</td><td>11</td><td>9</td><td>8</td><td>+2</td><td>42</td>
+            <td><div class="form-pills"><span class="pill l">L</span><span class="pill d">D</span><span class="pill w">W</span><span class="pill w">W</span><span class="pill d">D</span></div></td>
+          </tr>
+          <tr>
+            <td><span class="pos-badge">7</span></td>
+            <td>Gbarpolu FC</td>
+            <td>28</td><td>10</td><td>8</td><td>10</td><td>-1</td><td>38</td>
+            <td><div class="form-pills"><span class="pill w">W</span><span class="pill l">L</span><span class="pill d">D</span><span class="pill l">L</span><span class="pill w">W</span></div></td>
+          </tr>
+          <tr>
+            <td><span class="pos-badge">8</span></td>
+            <td>Fombah FC</td>
+            <td>28</td><td>9</td><td>9</td><td>10</td><td>-3</td><td>36</td>
+            <td><div class="form-pills"><span class="pill d">D</span><span class="pill l">L</span><span class="pill w">W</span><span class="pill d">D</span><span class="pill l">L</span></div></td>
+          </tr>
+          <tr>
+            <td><span class="pos-badge">9</span></td>
+            <td>Korkoya FC</td>
+            <td>28</td><td>8</td><td>8</td><td>12</td><td>-8</td><td>32</td>
+            <td><div class="form-pills"><span class="pill l">L</span><span class="pill l">L</span><span class="pill d">D</span><span class="pill w">W</span><span class="pill d">D</span></div></td>
+          </tr>
+          <tr>
+            <td><span class="pos-badge drop">10</span></td>
+            <td style="color:#e74c3c;">Bea Mountain</td>
+            <td>28</td><td>5</td><td>7</td><td>16</td><td>-18</td>
+            <td style="color:#e74c3c;">22</td>
+            <td><div class="form-pills"><span class="pill l">L</span><span class="pill l">L</span><span class="pill l">L</span><span class="pill d">D</span><span class="pill l">L</span></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="padding:1rem 1.5rem;font-family:var(--font-condensed);font-size:11px;color:var(--grey);letter-spacing:1px;display:flex;gap:2rem;border-top:1px solid rgba(255,255,255,0.04);">
+        <span style="color:var(--gold2);">■</span> AFC Champions League &nbsp;
+        <span style="color:#e74c3c;">■</span> Relegation
+      </div>
+    </div>
+
+    <!-- TABLE 2: UPCOMING FIXTURES -->
+    <div class="table-card reveal">
+      <div class="table-header">
+        <span class="table-title">Upcoming Fixtures</span>
+        <span class="table-season">Matchday 29</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Home</th>
+            <th></th>
+            <th>Away</th>
+            <th>Venue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="match-row">
+            <td>Apr 5</td>
+            <td>BYC</td>
+            <td style="text-align:center;color:var(--grey);">vs</td>
+            <td>Watanga FC</td>
+            <td style="font-size:0.8rem;color:var(--grey);">ATS</td>
+          </tr>
+          <tr class="match-row">
+            <td>Apr 5</td>
+            <td>FC Fassell</td>
+            <td style="text-align:center;color:var(--grey);">vs</td>
+            <td>Nimba Utd</td>
+            <td style="font-size:0.8rem;color:var(--grey);">SKD</td>
+          </tr>
+          <tr class="match-row">
+            <td>Apr 6</td>
+            <td>Barrolle</td>
+            <td style="text-align:center;color:var(--grey);">vs</td>
+            <td>Breweries</td>
+            <td style="font-size:0.8rem;color:var(--grey);">ATS</td>
+          </tr>
+          <tr class="match-row">
+            <td>Apr 6</td>
+            <td>Gbarpolu</td>
+            <td style="text-align:center;color:var(--grey);">vs</td>
+            <td>Fombah FC</td>
+            <td style="font-size:0.8rem;color:var(--grey);">Gbarnga</td>
+          </tr>
+          <tr class="match-row">
+            <td>Apr 7</td>
+            <td>Korkoya</td>
+            <td style="text-align:center;color:var(--grey);">vs</td>
+            <td>Bea Mtn</td>
+            <td style="font-size:0.8rem;color:var(--grey);">Zwedru</td>
+          </tr>
+          <tr class="match-row">
+            <td>Apr 12</td>
+            <td>Nimba Utd</td>
+            <td style="text-align:center;color:var(--grey);">vs</td>
+            <td>BYC</td>
+            <td style="font-size:0.8rem;color:var(--grey);">SKD</td>
+          </tr>
+          <tr class="match-row">
+            <td>Apr 12</td>
+            <td>Watanga FC</td>
+            <td style="text-align:center;color:var(--grey);">vs</td>
+            <td>Barrolle</td>
+            <td style="font-size:0.8rem;color:var(--grey);">ATS</td>
+          </tr>
+          <tr class="match-row">
+            <td>Apr 13</td>
+            <td>Breweries</td>
+            <td style="text-align:center;color:var(--grey);">vs</td>
+            <td>FC Fassell</td>
+            <td style="font-size:0.8rem;color:var(--grey);">ATS</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="table-header" style="margin-top:1rem;border-top:1px solid var(--glass-border);">
+        <span class="table-title">Top Scorers</span>
+        <span class="table-season">GW 28</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Player</th><th>Club</th><th>Goals</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pos-badge top">1</span></td><td><strong>E. Yarkpawolo</strong></td><td style="color:var(--grey);font-size:0.85rem">BYC</td><td style="text-align:center;color:var(--gold2);font-weight:700;">18</td></tr>
+          <tr><td><span class="pos-badge">2</span></td><td>J. Nimely</td><td style="color:var(--grey);font-size:0.85rem">Fassell</td><td style="text-align:center;">14</td></tr>
+          <tr><td><span class="pos-badge">3</span></td><td>B. Kamara</td><td style="color:var(--grey);font-size:0.85rem">Barrolle</td><td style="text-align:center;">12</td></tr>
+          <tr><td><span class="pos-badge">4</span></td><td>S. Kollie</td><td style="color:var(--grey);font-size:0.85rem">Watanga</td><td style="text-align:center;">11</td></tr>
+          <tr><td><span class="pos-badge">5</span></td><td>D. Freeman</td><td style="color:var(--grey);font-size:0.85rem">Nimba</td><td style="text-align:center;">9</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+```
+
+  </section>
+</div><!-- /page-standings -->
+
+<!-- ========================================
+     PAGE 3: CLUBS
+     ======================================== -->
+
+<div class="page" id="page-clubs">
+  <div style="padding-top:68px;"></div>
+  <section class="bg-alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <span class="section-label">Premier League 2024/25</span>
+          <h2 class="section-title">MEMBER<br>CLUBS</h2>
+        </div>
+      </div>
+
+```
+  <!-- IMAGE GALLERY -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:4rem;" class="reveal">
+    <div class="glass-card" style="overflow:hidden;border-radius:8px;height:340px;">
+      <img src="img3.jpeg" alt="Team Photo" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="glass-card" style="overflow:hidden;border-radius:8px;">
+        <img src="img5.jpeg" alt="Training" style="width:100%;height:160px;object-fit:cover;">
+      </div>
+      <div class="glass-card" style="overflow:hidden;border-radius:8px;">
+        <img src="img6.jpeg" alt="Match" style="width:100%;height:160px;object-fit:cover;">
+      </div>
+      <div class="glass-card" style="overflow:hidden;border-radius:8px;">
+        <img src="img1.jpeg" alt="Player" style="width:100%;height:160px;object-fit:cover;">
+      </div>
+      <div class="glass-card" style="overflow:hidden;border-radius:8px;">
+        <img src="img2.jpeg" alt="Player" style="width:100%;height:160px;object-fit:cover;">
+      </div>
+    </div>
+  </div>
+
+  <div class="clubs-grid">
+    <div class="glass-card club-card reveal">
+      <div class="club-emblem">BYC</div>
+      <div class="club-name">Barrack Young Controllers</div>
+      <div class="club-city">📍 Monrovia</div>
+      <ul class="club-info-list">
+        <li>Founded <span>1978</span></li>
+        <li>Stadium <span>ATS, 10K</span></li>
+        <li>Titles <span>8 🏆</span></li>
+        <li>Manager <span>A. Johnson</span></li>
+      </ul>
+    </div>
+    <div class="glass-card club-card reveal">
+      <div class="club-emblem">FAS</div>
+      <div class="club-name">FC Fassell</div>
+      <div class="club-city">📍 Monrovia</div>
+      <ul class="club-info-list">
+        <li>Founded <span>1998</span></li>
+        <li>Stadium <span>SKD, 35K</span></li>
+        <li>Titles <span>5 🏆</span></li>
+        <li>Manager <span>T. Williams</span></li>
+      </ul>
+    </div>
+    <div class="glass-card club-card reveal">
+      <div class="club-emblem">MBF</div>
+      <div class="club-name">Mighty Barrolle</div>
+      <div class="club-city">📍 Monrovia</div>
+      <ul class="club-info-list">
+        <li>Founded <span>1962</span></li>
+        <li>Stadium <span>ATS, 10K</span></li>
+        <li>Titles <span>12 🏆</span></li>
+        <li>Manager <span>C. Harris</span></li>
+      </ul>
+    </div>
+    <div class="glass-card club-card reveal">
+      <div class="club-emblem">WAT</div>
+      <div class="club-name">Watanga FC</div>
+      <div class="club-city">📍 Monrovia</div>
+      <ul class="club-info-list">
+        <li>Founded <span>2005</span></li>
+        <li>Stadium <span>ATS, 10K</span></li>
+        <li>Titles <span>2 🏆</span></li>
+        <li>Manager <span>D. Kollie</span></li>
+      </ul>
+    </div>
+    <div class="glass-card club-card reveal">
+      <div class="club-emblem">MCB</div>
+      <div class="club-name">Monrovia Club Breweries</div>
+      <div class="club-city">📍 Monrovia</div>
+      <ul class="club-info-list">
+        <li>Founded <span>1968</span></li>
+        <li>Stadium <span>ATS, 10K</span></li>
+        <li>Titles <span>6 🏆</span></li>
+        <li>Manager <span>B. Freeman</span></li>
+      </ul>
+    </div>
+    <div class="glass-card club-card reveal">
+      <div class="club-emblem">NIM</div>
+      <div class="club-name">Nimba United FC</div>
+      <div class="club-city">📍 Nimba County</div>
+      <ul class="club-info-list">
+        <li>Founded <span>2011</span></li>
+        <li>Stadium <span>SKD, 35K</span></li>
+        <li>Titles <span>1 🏆</span></li>
+        <li>Manager <span>M. Sumo</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- NESTED LISTS -->
+  <div class="gold-divider" style="margin:4rem 0;"></div>
+  <div class="nested-list-section reveal">
+    <div class="list-card">
+      <h3>League Structure</h3>
+      <ul class="lfa-list">
+        <li>
+          LFA Premier League
+          <ul>
+            <li>16 member clubs competing in a home/away format</li>
+            <li>38 matchdays across the full season</li>
+            <li>Champions qualify for CAF Champions League</li>
+            <li>Bottom 2 clubs relegated to First Division</li>
+          </ul>
+        </li>
+        <li>
+          LFA First Division
+          <ul>
+            <li>14 clubs competing for promotion</li>
+            <li>Top 2 clubs promoted to Premier League</li>
+          </ul>
+        </li>
+        <li>
+          Liberian FA Cup
+          <ul>
+            <li>Open to all registered LFA clubs</li>
+            <li>Single elimination format from Round of 32</li>
+            <li>Final hosted at SKD Sports Complex</li>
+          </ul>
+        </li>
+        <li>
+          CAF Competitions
+          <ul>
+            <li>Champions League — Premier League champion entry</li>
+            <li>Confederation Cup — FA Cup winner entry</li>
+          </ul>
+        </li>
+        <li>
+          Youth Leagues
+          <ul>
+            <li>U-17 National League</li>
+            <li>U-20 Development League</li>
+            <li>Women's Premier Football League (WPFL)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="list-card">
+      <h3>Club Regulations</h3>
+      <ul class="lfa-list">
+        <li>
+          Player Registration
+          <ul>
+            <li>Maximum 25 players on senior squad list</li>
+            <li>Minimum 8 homegrown players required</li>
+            <li>Foreign player limit: 5 per matchday squad</li>
+            <li>Transfer windows: January and July</li>
+          </ul>
+        </li>
+        <li>
+          Stadium Requirements
+          <ul>
+            <li>Minimum capacity of 5,000 seats</li>
+            <li>Floodlighting mandatory for evening fixtures</li>
+            <li>Medical room and doping control facilities</li>
+          </ul>
+        </li>
+        <li>
+          Financial Fair Play
+          <ul>
+            <li>Annual accounts submitted by March 31</li>
+            <li>Wage-to-revenue ratio cap of 70%</li>
+            <li>No outstanding debt to players or staff</li>
+          </ul>
+        </li>
+        <li>
+          Disciplinary
+          <ul>
+            <li>Yellow card accumulation: 5 = 1 match ban</li>
+            <li>Red card automatic 3-match suspension</li>
+            <li>Appeals heard within 7 days of ruling</li>
+          </ul>
+        </li>
+        <li>
+          Anti-Doping
+          <ul>
+            <li>CAF and WADA protocols enforced</li>
+            <li>Random testing throughout the season</li>
+            <li>Mandatory player education program</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+```
+
+  </section>
+</div><!-- /page-clubs -->
+
+<!-- ========================================
+     PAGE 4: TICKETS
+     ======================================== -->
+
+<div class="page" id="page-tickets">
+  <div style="padding-top:68px;"></div>
+  <section class="bg-pattern">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <span class="section-label">Matchday Experience</span>
+          <h2 class="section-title">GET YOUR<br>TICKETS</h2>
+        </div>
+      </div>
+
+```
+  <div style="margin-bottom:3rem;" class="reveal">
+    <div class="glass-card" style="padding:2rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;">
+      <div>
+        <div class="section-label">Next Match</div>
+        <h3 style="font-family:var(--font-display);font-size:3rem;color:var(--white);line-height:1;">BYC vs WATANGA FC</h3>
+        <p style="font-family:var(--font-condensed);color:var(--grey);margin-top:8px;">📅 Saturday, April 5, 2025 · 15:00 CAT<br>📍 Antoinette Tubman Stadium, Monrovia</p>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--font-condensed);font-size:11px;letter-spacing:3px;color:var(--grey);margin-bottom:8px;">TICKETS AVAILABLE IN</div>
+        <div style="font-family:var(--font-display);font-size:4rem;color:var(--gold2);" id="countdown">02 : 14 : 37</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tickets-grid reveal">
+    <div class="ticket-card">
+      <div class="ticket-head">
+        <div class="ticket-tier">General Admission</div>
+        <div class="ticket-name">Standard</div>
+        <div class="ticket-price">$5 <span>/ match</span></div>
+      </div>
+      <div class="ticket-body">
+        <ul class="ticket-features">
+          <li>General seating — terraces</li>
+          <li>Match programme included</li>
+          <li>Concession stand access</li>
+          <li class="x">Padded seating</li>
+          <li class="x">VIP Lounge access</li>
+          <li class="x">Pitch-side experience</li>
+        </ul>
+        <button class="btn-outline" style="width:100%;text-align:center;font-family:var(--font-condensed);font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:12px;border-radius:3px;cursor:pointer;">Buy Tickets</button>
+      </div>
+    </div>
+    <div class="ticket-card featured">
+      <div class="ticket-badge">Most Popular</div>
+      <div class="ticket-head">
+        <div class="ticket-tier">Grandstand</div>
+        <div class="ticket-name">Premium</div>
+        <div class="ticket-price">$15 <span>/ match</span></div>
+      </div>
+      <div class="ticket-body">
+        <ul class="ticket-features">
+          <li>Padded grandstand seating</li>
+          <li>Premium match programme</li>
+          <li>Concession stand access</li>
+          <li>Half-time hospitality</li>
+          <li>Pre-match pitch view</li>
+          <li class="x">VIP Lounge access</li>
+        </ul>
+        <button class="btn-primary" style="width:100%;text-align:center;font-family:var(--font-condensed);font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:12px;border-radius:3px;cursor:pointer;">Buy Tickets</button>
+      </div>
+    </div>
+    <div class="ticket-card">
+      <div class="ticket-head">
+        <div class="ticket-tier">Executive Suite</div>
+        <div class="ticket-name">VIP</div>
+        <div class="ticket-price">$75 <span>/ match</span></div>
+      </div>
+      <div class="ticket-body">
+        <ul class="ticket-features">
+          <li>Private executive suite seating</li>
+          <li>Gourmet hospitality package</li>
+          <li>VIP Lounge full access</li>
+          <li>Pitch-side pre-match experience</li>
+          <li>Player meet & greet ballot</li>
+          <li>Season keepsake gift</li>
+        </ul>
+        <button class="btn-outline" style="width:100%;text-align:center;font-family:var(--font-condensed);font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:12px;border-radius:3px;cursor:pointer;">Buy VIP</button>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+  </section>
+</div><!-- /page-tickets -->
+
+<!-- ========================================
+     PAGE 5: ABOUT
+     ======================================== -->
+
+<div class="page" id="page-about">
+  <div style="padding-top:68px;"></div>
+  <section>
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <span class="section-label">Our Story</span>
+          <h2 class="section-title">THE HEART<br>OF LIBERIAN<br><span style="color:var(--gold2)">FOOTBALL</span></h2>
+        </div>
+      </div>
+
+```
+  <div class="history-section reveal">
+    <div class="history-img">
+      <img src="img3.jpeg" alt="Historic Team">
+      <div class="history-year">Since 1936</div>
+    </div>
+    <div class="history-text">
+      <p>The <strong>Liberia Football Association (LFA)</strong> is the governing body of football in Liberia, founded in 1936 and affiliated with both the Confederation of African Football (CAF) and FIFA. For nearly nine decades, the LFA has been the institutional backbone of the sport in the nation, nurturing generations of talented players who have gone on to represent Liberia on the continental and world stages.</p>
+
+      <p>The LFA Premier League, the highest tier of club football in Liberia, has produced iconic clubs like <strong>Mighty Barrolle, Barrack Young Controllers,</strong> and <strong>Monrovia Club Breweries</strong> — clubs that carry the passion and identity of their communities into every match. Their rivalries are the stuff of legend, and their history is woven into the fabric of Liberian culture.</p>
+
+      <p>The Association operates under a reformed governance framework introduced in 2018, bringing modern standards of financial accountability, youth development, and anti-doping compliance to Liberian football. Today, the LFA oversees the Premier League, First Division, FA Cup, Women's Premier Football League, and national youth competitions.</p>
+
+      <p>On the international stage, Liberia has produced footballing legends including <strong>George Weah</strong> — the only African to win the FIFA World Player of the Year award — whose legacy continues to inspire the generation of players now competing in the LFA Premier League every week.</p>
+
+      <p>The LFA's long-term vision is to develop Liberian football infrastructure, qualify for the FIFA World Cup, and create sustainable pathways from grassroots academies to professional clubs. With continued investment, dedicated coaches, and the fire of the Liberian football spirit, the beautiful game in this nation is only growing stronger.</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-year">1936</div>
+          <div class="timeline-desc">Liberia Football Association officially founded; affiliated with FIFA</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">1962</div>
+          <div class="timeline-desc">LFA Premier League established as the national top-flight competition</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">1980</div>
+          <div class="timeline-desc">Liberia's first CAF Champions League campaign; Mighty Barrolle reach the semis</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">1995</div>
+          <div class="timeline-desc">George Weah wins Ballon d'Or, FIFA World Player — a watershed moment for Liberian football</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2018</div>
+          <div class="timeline-desc">LFA governance reform; new statutes, youth development framework, and FFP rules enacted</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2025</div>
+          <div class="timeline-desc">Record season attendance and highest goals tally in LFA Premier League history</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- injury/player image block -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;margin-top:4rem;" class="reveal">
+    <div class="glass-card" style="overflow:hidden;border-radius:8px;">
+      <img src="img4.jpeg" alt="Player Support" style="width:100%;height:280px;object-fit:cover;">
+      <div style="padding:1rem 1.2rem;">
+        <div class="section-label">Player Welfare</div>
+        <p style="font-family:var(--font-condensed);color:var(--grey);font-size:0.9rem;line-height:1.5;">The LFA Player Welfare Programme ensures full medical support, including Aircast rehabilitation for injured athletes.</p>
+      </div>
+    </div>
+    <div class="glass-card" style="overflow:hidden;border-radius:8px;">
+      <img src="img1.jpeg" alt="Training" style="width:100%;height:280px;object-fit:cover;">
+      <div style="padding:1rem 1.2rem;">
+        <div class="section-label">Elite Training</div>
+        <p style="font-family:var(--font-condensed);color:var(--grey);font-size:0.9rem;line-height:1.5;">State-of-the-art training at certified LFA facilities, with access to GPS tracking, sports science, and nutrition coaching.</p>
+      </div>
+    </div>
+    <div class="glass-card" style="overflow:hidden;border-radius:8px;">
+      <img src="img2.jpeg" alt="Pre-Match" style="width:100%;height:280px;object-fit:cover;">
+      <div style="padding:1rem 1.2rem;">
+        <div class="section-label">Matchday Focus</div>
+        <p style="font-family:var(--font-condensed);color:var(--grey);font-size:0.9rem;line-height:1.5;">Every matchday begins with meticulous preparation — from boot-lacing rituals to tactical briefings — reflecting the professionalism of LFA's elite.</p>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+  </section>
+</div><!-- /page-about -->
+
+<!-- ===== FOOTER (shown on all pages) ===== -->
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="logo-badge">LFA</div>
+          <div class="logo-text">
+            <span style="font-family:var(--font-display);font-size:18px;color:var(--gold2);letter-spacing:2px;">LFA LIBERIA</span>
+            <span style="font-family:var(--font-condensed);font-size:10px;color:var(--grey);letter-spacing:3px;text-transform:uppercase;display:block;">Football Association</span>
+          </div>
+        </div>
+        <p class="footer-desc">The official governing body of association football in the Republic of Liberia. Affiliated with FIFA and the Confederation of African Football (CAF). Promoting football excellence at every level of the game.</p>
+        <div class="social-links">
+          <a class="social-link" title="Twitter/X">𝕏</a>
+          <a class="social-link" title="Facebook">f</a>
+          <a class="social-link" title="Instagram">◎</a>
+          <a class="social-link" title="YouTube">▶</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Competition</h4>
+        <ul class="footer-links">
+          <li><a>Premier League</a></li>
+          <li><a>First Division</a></li>
+          <li><a>FA Cup</a></li>
+          <li><a>Women's League</a></li>
+          <li><a>Youth Leagues</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>The Association</h4>
+        <ul class="footer-links">
+          <li><a>About LFA</a></li>
+          <li><a>Executive Committee</a></li>
+          <li><a>Statutes & Rules</a></li>
+          <li><a>Anti-Doping</a></li>
+          <li><a>Referees</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Media & Fan Zone</h4>
+        <ul class="footer-links">
+          <li><a>News & Press</a></li>
+          <li><a>Match Centre</a></li>
+          <li><a>Photo Gallery</a></li>
+          <li><a>Video Hub</a></li>
+          <li><a>Fan Resources</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="gold-divider"></div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Liberia Football Association. All rights reserved.</div>
+      <div class="footer-legal">
+        <a>Privacy Policy</a>
+        <a>Terms of Use</a>
+        <a>Cookie Policy</a>
+        <a>Contact Us</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+
+<script>
+  // Page navigation
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const navEl = document.getElementById('nav-' + page);
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo(0, 0);
+    observeReveal();
+  }
+
+  // Scroll reveal
+  function observeReveal() {
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => observer.observe(r));
+  }
+
+  // Countdown timer (decorative)
+  function updateCountdown() {
+    const el = document.getElementById('countdown');
+    if (!el) return;
+    let [h, m, s] = el.textContent.split(' : ').map(Number);
+    s--;
+    if (s < 0) { s = 59; m--; }
+    if (m < 0) { m = 59; h--; }
+    if (h < 0) { h = 0; m = 0; s = 0; }
+    el.textContent = `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
+  }
+  setInterval(updateCountdown, 1000);
+
+  // Init
+  window.addEventListener('load', observeReveal);
+  document.addEventListener('scroll', observeReveal, { passive: true });
+</script>
+
+</body>
+</html>
